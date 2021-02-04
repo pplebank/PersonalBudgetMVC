@@ -1,20 +1,21 @@
 <?php
 
-echo 'Requested URL = "' . $_SERVER['QUERY_STRING'] . '"';
 
-require '../Core/Router.php';
+//Autoloader
+spl_autoload_register(function ($class) {
+    $root = dirname(__DIR__);   // get the parent directory
+    $file = $root . '/' . str_replace('\\', '/', $class) . '.php';
+    if (is_readable($file)) {
+        require $root . '/' . str_replace('\\', '/', $class) . '.php';
+    }
+});
 
-$router = new Router();
+$router = new Core\Router();
 
+
+$router->add('', ['controller' => 'Home', 'action' => 'index']);  //default route
 $router->add('{controller}/{action}');
 $router->add('{controller}/{id:\d+}/{action}'); //custom regular expression with optional id 
-  
-$url = $_SERVER['QUERY_STRING'];
+$router->add('admin/{controller}/{action}', ['namespace' => 'Admin']);  
 
-if ($router->match($url)) {
-    echo '<pre>';
-    var_dump($router->getParams());
-    echo '</pre>';
-} else {
-    echo "No route found for URL '$url'";
-}
+$router->dispatch($_SERVER['QUERY_STRING']);
