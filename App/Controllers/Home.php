@@ -2,15 +2,17 @@
 
 namespace App\Controllers;
 
+use \Core\View; //dont need to use full path to file
+
 class Home extends \Core\Controller
 {
 
-    public function index()
+    public function indexAction()
     {
-        echo 'Hello from the index action in the Home controller!';
+        View::render('Home/index.php', ['variable' => 'someVariable']);
     }
 
-    public function login()
+    public function loginAction()
     {
         echo 'Hello from the login action in the Home controller!';
     }

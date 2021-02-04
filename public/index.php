@@ -1,7 +1,9 @@
 <?php
 
+require 'vendor/autoload.php';
 
-//Autoloader
+Twig_Autoloader::register();
+
 spl_autoload_register(function ($class) {
     $root = dirname(__DIR__);   // get the parent directory
     $file = $root . '/' . str_replace('\\', '/', $class) . '.php';
@@ -11,7 +13,6 @@ spl_autoload_register(function ($class) {
 });
 
 $router = new Core\Router();
-
 
 $router->add('', ['controller' => 'Home', 'action' => 'index']);  //default route
 $router->add('{controller}/{action}');
