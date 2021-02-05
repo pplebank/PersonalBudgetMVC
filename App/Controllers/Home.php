@@ -9,7 +9,8 @@ class Home extends \Core\Controller
 
     public function indexAction()
     {
-        View::render('Home/index.php', ['variable' => 'someVariable']);
+      //  View::render('Home/index.php', ['variable' => 'someVariable']);
+        View::renderTemplate('Home/index.html', ['variable' => 'someVariable']);
     }
 
     public function loginAction()
