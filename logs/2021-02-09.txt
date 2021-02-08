@@ -1,0 +1,9 @@
+[09-Feb-2021 00:23:32 Europe/Berlin] Uncaught exception: 'Exception' with message 'Method indexdAction not found in controller App\Controllers\Main'
+Stack trace: #0 C:\xampp\htdocs\PersonalBudgetMVC\Core\Router.php(96): Core\Controller->__call('indexd', Array)
+#1 C:\xampp\htdocs\PersonalBudgetMVC\public\index.php(16): Core\Router->dispatch('main/indexd')
+#2 {main}
+Thrown in 'C:\xampp\htdocs\PersonalBudgetMVC\Core\Controller.php' on line 25
+[09-Feb-2021 00:23:37 Europe/Berlin] Uncaught exception: 'Exception' with message 'No route matched.'
+Stack trace: #0 C:\xampp\htdocs\PersonalBudgetMVC\public\index.php(16): Core\Router->dispatch('main/')
+#1 {main}
+Thrown in 'C:\xampp\htdocs\PersonalBudgetMVC\Core\Router.php' on line 105

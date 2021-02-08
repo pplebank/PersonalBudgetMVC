@@ -99,10 +99,10 @@ public function dispatch($url)
                 throw new \Exception("Method $action in controller $controller cannot be called directly - remove the Action suffix to call this method");
             }
         } else {
-            echo "Controller class $controller not found";
+            throw new \Exception("Controller class $controller not found");
         }
     } else {
-        echo 'No route matched.';
+        throw new \Exception('No route matched.', 404);
     }
 }
 

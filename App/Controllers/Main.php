@@ -2,14 +2,14 @@
 
 namespace App\Controllers;
 
+use \Core\View;
+
 class Main extends \Core\Controller
 {
 
     public function indexAction()
     {
-        echo 'Hello from the index action in the Main controller!';
-        echo '<p>Query string parameters: <pre>' .
-        htmlspecialchars(print_r($_GET, true)) . '</pre></p>';
+        View::renderTemplate('Main/index.html', ['variable' => 'someVariable']);
     }
 
     public function newExpenseAction()
