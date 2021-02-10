@@ -3,6 +3,7 @@
 namespace Core;
 
 use App\Config;
+use PDO;
 
 abstract class Model
 {
@@ -22,5 +23,6 @@ abstract class Model
 
         return $db;
     }
+
 }
 
