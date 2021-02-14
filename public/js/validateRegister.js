@@ -1,4 +1,3 @@
-
 const constraints = {
   email: {
     presence: true,
@@ -34,7 +33,6 @@ const constraints = {
       message: "can only contain a-z and 0-9"
     }
   },
-
 };
 
 const emailInput = document.querySelector("#email");
@@ -42,39 +40,60 @@ const emailConstrains = {
   email: {
     checkExists: []
   }
-} 
+}
 
 const form = document.querySelector("form#signUpForm");
-form.addEventListener("submit", function(ev) {
-  ev.preventDefault();
-  handleFormSubmit(form);
+form.addEventListener("submit", function (ev) {
+  if (!handleFormSubmit(form)) {
+    ev.preventDefault();
+  }
+  if (!handleAsyncFormSubmit(form)) {
+    ev.preventDefault();
+  }
 });
 
 const inputs = document.querySelectorAll("input");
 for (let i = 0; i < inputs.length; ++i) {
-  inputs.item(i).addEventListener("change", function(ev) {
-    let obj = this;
-    let n = this.name;
+  inputs.item(i).addEventListener("change", function (ev) {
+    let errors = validate(form, constraints) || {};
+    showErrorsForInput(this, errors[this.name]);
 
-    validate.async(form, emailConstrains).then(function() {
-      let moreErrors = validate(form, constraints) || {};
-      showErrorsForInput(obj, moreErrors[n.valueOf()]);
-    }, function(errors) {
-        showErrorsForInput(obj, errors[n.valueOf()]);
-    });
   });
 }
 
+emailInput.addEventListener("change", function (ev) {
+  let obj = this;
+  validate.async(form, emailConstrains).then(function () {
+    showErrorsForInput(obj, false);
+    return true;
+  }, function (errors) {
+    showErrorsForInput(obj, errors[obj.name.valueOf()]);
+    return false;
+  })
+});
+
+function handleAsyncFormSubmit(form) {
+  let obj = emailInput;
+  let result = validate.async(form, emailConstrains).then(function () {
+    showErrors(form, {});
+    console.log("success");
+    return true;
+  }, function (errors) {
+    showErrors(form, errors || {});
+    console.log("failed");
+    return false;
+  })
+  return result;
+};
+
 function handleFormSubmit(form) {
-  validate.async(form, emailConstrains).then(function() {
-    let errors = validate(form, constraints);
-    showErrors(form, errors || {});
-  }, function(errors) {
-    showErrors(form, errors || {});
-    if (!errors) {
-      console.log('xddd');
-    }
-  });
+  let errors = validate(form, constraints);
+  showErrors(form, errors || {});
+  if (!errors) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 function showErrors(form, errors) {
@@ -128,16 +147,14 @@ validate.validators.checkExists = function () {
     if (!validate.isEmpty(emailInput.value)) {
       fetch('account/validateEmail?email=' + emailInput.value)
         .then(response => response.json())
-  .then(data => {
+        .then(data => {
 
-    if (data != false) resolve("already exists!");
-    else resolve();
-  })
-  .catch(function(error) {
-    reject(": Error, try again.");
+          if (data != false) resolve("already exists!");
+          else resolve();
+        })
+        .catch(function (error) {
+          reject(": Error, try again.");
+        });
+    } else resolve(": Error, try again.");
   });
-} else resolve();
-});
 };
-
-
