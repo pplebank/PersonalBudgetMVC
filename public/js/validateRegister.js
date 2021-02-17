@@ -35,23 +35,27 @@ const constraints = {
   },
 };
 
-const emailInput = document.querySelector("#email");
+let asyncresult = false;
+let emailstaticerrors = false;
+let asyncerrors = false;
+const form = document.querySelector("form#signUpForm");
+
+const emailInput = form.querySelector("#email");
 const emailConstrains = {
   email: {
     checkExists: []
   }
 }
 
-var result = false;
-const form = document.querySelector("form#signUpForm");
+
 form.addEventListener("submit", function (ev) {
 
-  if (!handleFormSubmit(form) || !result) {
+  if (!handleFormSubmit(form) || !asyncresult) {
     ev.preventDefault();
   }
 });
 
-const inputs = document.querySelectorAll("input");
+const inputs = form.querySelectorAll("input");
 for (let i = 0; i < inputs.length; ++i) {
   inputs.item(i).addEventListener("change", function (ev) {
     let errors = validate(form, constraints) || {};
@@ -64,22 +68,12 @@ emailInput.addEventListener("change", function (ev) {
   let obj = this;
   validate.async(form, emailConstrains).then(function () {
     showAsyncErrorsForInput(obj, false);
-    result = true;
+    asyncresult = true;
   }, function (errors) {
     showAsyncErrorsForInput(obj, errors[obj.name.valueOf()]);
-    result = false;
+    asyncresult = false;
   })
 });
-
-function handleAsyncFormSubmit(form) {
-  validate.async(form, emailConstrains).then(function (errors) {
-    showAsyncErrors(form, errors || {});
-    result = true;
-  }, function (asyncerrors) {
-    showAsyncErrors(form, errors || {});
-    result = false;
-  })
-};
 
 function handleFormSubmit(form) {
   let errors = validate(form, constraints);
@@ -91,12 +85,21 @@ function handleFormSubmit(form) {
   }
 }
 
+function handleAsyncFormSubmit(form) {
+  validate.async(form, emailConstrains).then(function (errors) {
+    showAsyncErrors(form, errors || {});
+    asyncresult = true;
+  }, function (asyncerrors) {
+    showAsyncErrors(form, errors || {});
+    asyncresult = false;
+  })
+};
+
 function showErrors(form, errors) {
   _.each(form.querySelectorAll("input[name]"), function (input) {
     showErrorsForInput(input, errors && errors[input.name]);
   });
 }
-
 
 function showAsyncErrors(errors) {
   _.each(form.querySelector("input[email]"), function (input) {
@@ -121,9 +124,6 @@ function showErrorsForInput(input, errors) {
   }
 }
 
-var emailstaticerrors = false;
-var asyncerrors = false;
-
 function showAsyncErrorsForInput(input, error) {
   let formGroup = closestParent(input.parentNode, "form-group"),
     messages = formGroup.querySelector(".async-messages");
@@ -138,19 +138,6 @@ function showAsyncErrorsForInput(input, error) {
     input.classList.add("border-success");
   }
 }
-
-function resetAsyncFormGroup(input, formGroup) {
-  asyncerrors = false;
-  if (!emailstaticerrors) {
-    input.classList.remove("border-danger");
-  }
-  input.classList.remove("border-success");
-  let message = formGroup.querySelector(".async-messages > .text-danger");
-  if (message) {
-    message.parentNode.removeChild(message);
-  }
-}
-
 
 function closestParent(child, className) {
   if (!child || child == document) {
@@ -167,15 +154,25 @@ function resetFormGroup(input, formGroup) {
   if (input.name == 'email') {
     emailstaticerrors = false;
   }
-
   if (input.name != 'email' || (input.name == 'email' && !asyncerrors)) {
     input.classList.remove("border-danger");
   }
-  //input.classList.remove("border-danger");
   input.classList.remove("border-success");
   _.each(formGroup.querySelectorAll(".text-danger:not(.async-messages > p)"), function (el) {
     el.parentNode.removeChild(el);
   });
+}
+
+function resetAsyncFormGroup(input, formGroup) {
+  asyncerrors = false;
+  if (!emailstaticerrors) {
+    input.classList.remove("border-danger");
+  }
+  input.classList.remove("border-success");
+  let message = formGroup.querySelector(".async-messages > .text-danger");
+  if (message) {
+    message.parentNode.removeChild(message);
+  }
 }
 
 function addError(messages, error) {
@@ -188,19 +185,16 @@ function addError(messages, error) {
 function addAsyncError(messages, error) {
   let block = document.createElement("p");
   block.classList.add("text-danger");
-  block.innerText = error;
-  console.log(error);
+  block.innerText = error
   messages.appendChild(block);
 }
 
 validate.validators.checkExists = function () {
   return new validate.Promise(function (resolve, reject) {
     if (!validate.isEmpty(emailInput.value)) {
-      fetch('account/validateEmail?email=' + emailInput.value)
+      fetch('http://localhost/account/validateEmail?email=' + emailInput.value)
         .then(response => response.json())
         .then(data => {
-          console.log("this is fetched data" + data);
-
           if (data != false) resolve("already exists!");
           else resolve();
         })
@@ -210,3 +204,4 @@ validate.validators.checkExists = function () {
     } else resolve();
   });
 };
+

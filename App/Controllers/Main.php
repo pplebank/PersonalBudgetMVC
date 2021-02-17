@@ -4,12 +4,13 @@ namespace App\Controllers;
 
 use \Core\View;
 
-class Main extends \Core\Controller
+class Main extends PageRequiresLogin
 {
 
     public function indexAction()
     {
-        View::renderTemplate('Main/index.html', ['variable' => 'someVariable']);
+
+            View::renderTemplate('Main/index.html', ['variable' => 'someVariable']);
     }
 
     public function newExpenseAction()

@@ -2,7 +2,10 @@
 
 namespace Core;
 
+use \App\Controllers\Authentificator;
+
 class View
+
 {
 
     public static function render($view, $args =[])
@@ -24,6 +27,9 @@ class View
         if ($twig === null) {
             $loader = new \Twig\Loader\FilesystemLoader(dirname(__DIR__) . '/App/Views'); 
             $twig = new \Twig\Environment($loader);
+
+            $twig->addGlobal('is_logged_in', Authentificator::isLoggedIn());
+            $twig->addGlobal('current_user', Authentificator::getUser());  
         }
 
         echo $twig->render($template, $args);

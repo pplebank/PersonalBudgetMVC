@@ -2,19 +2,26 @@
 
 namespace App\Controllers;
 
-use \Core\View; //dont need to use full path to file
+use \App\Models\User;
+use \Core\View;
+
+//dont need to use full path to file
 
 class Home extends \Core\Controller
 {
 
     public function indexAction()
     {
-      //  View::render('Home/index.php', ['variable' => 'someVariable']);
-        View::renderTemplate('Home/index.html', ['variable' => 'someVariable']);
+        View::renderTemplate('Home/index.html');
     }
 
-    public function loginAction()
+/*
+    public function getURL()
     {
-        echo 'Hello from the login action in the Home controller!';
+        $baseUrl = ('http://' . $_SERVER['HTTP_HOST']);
+
+        header('Content-Type: application/json');
+        echo json_encode($baseUrl);
     }
+*/
 }

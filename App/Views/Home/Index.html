@@ -1,5 +1,10 @@
 {% include 'includes/head.html' %}
 
+
+{% if phpMessage is defined %}
+{{ phpMessage }}
+{%endif%}
+
 {% if user.errors is not empty %}
 <p>Errors:</p>
 <ul>
@@ -8,6 +13,14 @@
     {% endfor %}
 </ul>
 {% endif %}
+
+{#
+{% if session.user_id %}
+User with ID {{ session.user_id }} is logged in.
+{% else %}
+User is not logged in.
+{% endif %}
+#}
 
 <!-- MODAL SIGN UP -->
 <div class="modal fade" id="modalSignUp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -19,12 +32,12 @@
             </div>
             <div class="modal-body">
                 <div class="card-body">
-                    <form id="signUpForm" action="/signup/new" method="post" novalidate>
+                    <form id="signUpForm" action="/register" method="post" novalidate>
                         <div class="form-group">
 
                             <label for="name">Username</label>
-                                <input type="text" class="form-control my-2" id="name" name="name"
-                                    placeholder="Username" :invalid>
+                            <input type="text" class="form-control my-2" id="name" name="name" placeholder="Username"
+                                :invalid>
                             <div class="col messages"></div>
 
                         </div>
@@ -45,14 +58,14 @@
                             <label for="passwordRepeatSignUp">Repeat password</label>
                             <input type="password" class="form-control my-2" id="passwordRepeatSignUp"
                                 name="passwordConfirmation" placeholder="Repeat password">
-                                <div class="col messages"></div>
+                            <div class="col messages"></div>
                         </div>
                     </form>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" form="signUpForm" class="btn btn-primary">Sign Up</button>
+                <button type="submit" form="signUpForm" class="btn btn-primary" id="signUpSubmit">Sign Up</button>
             </div>
         </div>
     </div>
@@ -68,15 +81,17 @@
                         <h4>Account Login</h4>
                     </div>
                     <div class="card-body">
-                        <form action="login.php" id="loginForm" method="post">
+                        <form action="/login" id="loginForm" method="post">
                             <div class="form-group">
-                                <label for="loginInput">Login</label>
-                                <input type="text" class="form-control my-2" name="username" id="loginInput">
+                                <label for="loginInput">Email</label>
+                                <input type="text" class="form-control my-2" name="emailLogin" id="emailLogin"
+                                    value="{{ emailLogin }}">
 
                             </div>
                             <div class="form-group">
                                 <label for="passwordLogin">Password</label>
-                                <input type="password" class="form-control my-2" name="password" id="passwordLogin">
+                                <input type="password" class="form-control my-2" name="passwordLogin"
+                                    id="passwordLogin">
 
                             </div>
                             <div class="form-check my-2">
