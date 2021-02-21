@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use PDO;
+use \App\Controllers\Token;
 
 class User extends \Core\Model
 {
@@ -89,7 +90,6 @@ class User extends \Core\Model
         return $stmt->fetch();
     }
 
-
     public static function authenticate($email, $password)
     {
         $user = static::findByEmail($email);
@@ -117,4 +117,37 @@ class User extends \Core\Model
 
         return $stmt->fetch();
     }
+
+    public function rememberUser()
+    {
+        $token = new Token();
+        $tokenHashed = $token->getHash();
+        $valueOfToken = $token->getValue();
+        $expiresDate = time() + 60 * 60 * 24 * 7;
+
+        $this->saveCookieData($valueOfToken, $expiresDate);
+
+        $expiresDate = time() + 60 * 60 * 24 * 7; // 7 days
+
+        $sql = 'INSERT INTO login_remember (token_hash, id, expires_date)
+                VALUES (:tokenHash, :id, :expiresDate)';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindValue(':tokenHash', $tokenHashed, PDO::PARAM_STR);
+        $stmt->bindValue(':id', $this->id, PDO::PARAM_INT);
+        $stmt->bindValue(':expiresDate', date('Y-m-d H:i:s', $expiresDate), PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
+    private function saveCookieData($tokenValue, $date)
+    {
+
+        $this->rememberCookieToken = $tokenValue;
+        $this->expiresDate = $date;
+
+    }
+
 }

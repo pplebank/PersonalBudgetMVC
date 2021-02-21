@@ -14,8 +14,10 @@ class Register extends \Core\Controller
             $user = new User($_POST);
 
             if ($user->save()) {
-                View::renderTemplate('Home/index.html', ['phpMessage' => 'You registered successfully']);
+                Flash::addMessage('You registered successfully');
+                $this->redirect('/');
                 exit;
+
             } else {
                 View::renderTemplate('Home/index.html', [
                     'user' => $user,

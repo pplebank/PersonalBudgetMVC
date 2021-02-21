@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use \App\Models\User;
 use \Core\View;
 
 //dont need to use full path to file
@@ -10,18 +9,26 @@ use \Core\View;
 class Home extends \Core\Controller
 {
 
+    protected function before()
+    {
+        if (Authentificator::getUser()) {
+
+            $this->redirect('/main/index');
+        }
+    }
+
     public function indexAction()
     {
         View::renderTemplate('Home/index.html');
     }
 
 /*
-    public function getURL()
-    {
-        $baseUrl = ('http://' . $_SERVER['HTTP_HOST']);
+public function getURL()
+{
+$baseUrl = ('http://' . $_SERVER['HTTP_HOST']);
 
-        header('Content-Type: application/json');
-        echo json_encode($baseUrl);
-    }
-*/
+header('Content-Type: application/json');
+echo json_encode($baseUrl);
+}
+ */
 }

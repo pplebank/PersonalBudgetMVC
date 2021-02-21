@@ -3,6 +3,7 @@
 namespace Core;
 
 use \App\Controllers\Authentificator;
+use \App\Controllers\Flash;
 
 abstract class Controller
 {
@@ -47,7 +48,9 @@ abstract class Controller
 
     public function requireLogin()
     {
-        if (!Authentificator::isLoggedIn()) {
+        if (!Authentificator::getUser()) {
+
+Flash::addMessage('Please login to acces that page', Flash::WARNING);
 
             Authentificator::rememberPage();
             $this->redirect('/');
