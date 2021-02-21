@@ -1,15 +1,24 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Models\User;
+use App\Models\RememberMe;
 
 class Authentificator extends \Core\Controller
 {
 
-    public static function setSession($user)
+    public static function setSession($user, $remember)
     {
         session_regenerate_id(true);
         $_SESSION['user_id'] = $user->id;
+
+        if ($remember) {
+
+            if ($user->rememberUser()) {
+                setcookie('rememberMe', $user->rememberCookieToken, $user->expiresDate, '/');
+            }
+        }
     }
 
     public static function destroySession()
@@ -28,11 +37,7 @@ class Authentificator extends \Core\Controller
             );
         }
         session_destroy();
-    }
-
-    public static function isLoggedIn()
-    {
-        return isset($_SESSION['user_id']);
+        static::forgetLoggedData();
     }
 
     public static function rememberPage()
@@ -49,6 +54,44 @@ class Authentificator extends \Core\Controller
     {
         if (isset($_SESSION['user_id'])) {
             return User::findByID($_SESSION['user_id']);
+        } else {
+
+            return static::loginFromCookies();
+
+        }
+    }
+
+    private static function loginFromCookies()
+    {
+        $cookie = $_COOKIE['rememberMe'] ?? false;
+
+        if ($cookie) {
+            $rememberMe = RememberMe::findByToken($cookie);
+
+            if ($rememberMe && !$rememberMe->cookieExpired()) {
+
+                $user = $rememberMe->getUser();
+                static::setSession($user, false);
+
+                return $user;
+            }
+        }
+    }
+
+    protected static function forgetLoggedData()
+    {
+        $cookie = $_COOKIE['rememberMe'] ?? false;
+
+        if ($cookie) {
+
+            $savedData = RememberMe::findByToken($cookie);
+
+            if ($savedData) {
+
+                $savedData->deleteCookiesAfterLogout();
+
+            }
+            setcookie('rememberMe', '', time() - 3600);  
         }
     }
 
