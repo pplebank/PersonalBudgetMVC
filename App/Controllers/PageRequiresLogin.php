@@ -10,3 +10,5 @@ abstract class PageRequiresLogin extends \Core\Controller
         $this->requireLogin();
     }
 }
+
+

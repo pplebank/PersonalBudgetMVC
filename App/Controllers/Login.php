@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use \App\Controllers\Flash;
 use \App\Models\User;
-use \Core\View;
 
 class Login extends \Core\Controller
 {
@@ -24,7 +23,7 @@ class Login extends \Core\Controller
 
             } else {
                 Flash::addMessage('Problem with authentification', Flash::WARNING);
-                View::renderTemplate('Home/index.html');
+                $this->redirect('/');
             }
         } else {
             $this->redirect('/');

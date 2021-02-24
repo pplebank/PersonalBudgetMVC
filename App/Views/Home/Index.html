@@ -31,7 +31,7 @@ User is not logged in.
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Sign Up</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -75,6 +75,39 @@ User is not logged in.
     </div>
 </div>
 
+<!-- MODAL RESET PASSWORD -->
+<div class="modal fade" id="modalForgotPassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Forgot Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card-body">
+                    <form id="passwordForgotForm" action="/reset" method="post" novalidate>
+
+                        <div class="form-group">
+                            <label for="emailSignUp">Email address</label>
+                            <input type="email" class="form-control my-2" id="emailReset" name="emailReset"
+                                placeholder="Email address">
+                            <div class="col messages"></div>
+                            <div class="col async-messages"></div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="passwordForgotForm" class="btn btn-primary"
+                    id="passwordForgotSubmit">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- LOGIN-->
 <main id="login" class="my-auto">
     <div class="container">
@@ -99,19 +132,20 @@ User is not logged in.
 
                             </div>
                             <div class="form-check my-2">
-                                <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberUser" checked>
+                                <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberUser"
+                                    checked>
                                 <label class="form-check-label" for="rememberMe">
                                     Remember me
                                 </label>
 
                             </div>
                             <div class="d-flex justify-content-center">
-                                <input type="submit" name="do_login" form="loginForm"
-                                    class="btn btn-primary col-8 my-2">
+                                <input type="submit" form="loginForm" class="btn btn-primary col-8 my-2">
                             </div>
                         </form>
                         <div class="d-flex justify-content-center my-2">
-                            <a href="#"> Forgot password?</a>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#modalForgotPassword"> Forgot
+                                password?</a>
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-center py-3">

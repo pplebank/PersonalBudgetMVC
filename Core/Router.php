@@ -13,7 +13,7 @@ class Router
         $route = preg_replace('/\//', '\\/', $route); //escape slashes
 
         $route = preg_replace('/\{([a-z]+)\}/', '(?P<\1>[a-z-]+)', $route); //change variables format {xyz}
-        
+
         $route = preg_replace('/\{([a-z]+):([^\}]+)\}/', '(?P<\1>\2)', $route); //if this regular expression matches, then replace second party (optional id), else changed controller with second replacing
 
         $route = '/^' . $route . '$/i'; //insensitive flag (for e.g capitals)

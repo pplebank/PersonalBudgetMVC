@@ -8,14 +8,14 @@ class Flash
     const INFO = 'info';
     const WARNING = 'warning';
 
-    public static function addMessage($message, $type = 'success') 
+    public static function addMessage($message, $type = 'success')
     {
         if (!isset($_SESSION['flashMessages'])) {
             $_SESSION['flashMessages'] = [];
         }
         $_SESSION['flashMessages'][] = [
-        'body' => $message,
-        'type'=> $type 
+            'body' => $message,
+            'type' => $type,
         ];
     }
 

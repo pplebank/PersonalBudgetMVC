@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use PDO;
+use \App\Controllers\Mail;
 use \App\Controllers\Token;
 
 class User extends \Core\Model
@@ -127,8 +128,6 @@ class User extends \Core\Model
 
         $this->saveCookieData($valueOfToken, $expiresDate);
 
-        $expiresDate = time() + 60 * 60 * 24 * 7; // 7 days
-
         $sql = 'INSERT INTO login_remember (token_hash, id, expires_date)
                 VALUES (:tokenHash, :id, :expiresDate)';
 
@@ -148,6 +147,60 @@ class User extends \Core\Model
         $this->rememberCookieToken = $tokenValue;
         $this->expiresDate = $date;
 
+    }
+
+    public static function passwordReset($email)
+    {
+
+        $user = static::findByEmail($email);
+        if ($user) {
+            $beginResult = $user->PasswordResetBegin();
+
+            if ($beginResult) {
+
+                $user->sendMailWithResetForm();
+            }
+
+        }
+
+    }
+
+    private function saveResetToken($tokenValue)
+    {
+        $this->passwordResetToken = $tokenValue;
+    }
+
+    protected function PasswordResetBegin()
+    {
+        $token = new Token();
+        $tokenHashed = $token->getHash();
+        $valueOfToken = $token->getValue();
+
+        $this->saveResetToken($valueOfToken);
+
+        $expiresDate = time() + 60 * 30; // 30 minutes
+
+        $sql = 'UPDATE users
+                SET reset_password_hash = :tokenHashed,
+                reset_password_date = :expiresDate
+                WHERE id = :id';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindValue(':tokenHashed', $tokenHashed, PDO::PARAM_STR);
+        $stmt->bindValue(':expiresDate', date('Y-m-d H:i:s', $expiresDate), PDO::PARAM_STR);
+        $stmt->bindValue(':id', $this->id, PDO::PARAM_INT);
+
+        return $stmt->execute();
+
+    }
+
+    protected function sendMailWithResetForm()
+    {
+        $url = 'http://' . $_SERVER['HTTP_HOST'] . '/reset' . '/' . $this->passwordResetToken;
+
+        Mail::send($this->email, $this->name, 'Password reset', 'ResetPasswordMessage.html', ['url' => $url]);
     }
 
 }

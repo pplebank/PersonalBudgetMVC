@@ -50,7 +50,7 @@ abstract class Controller
     {
         if (!Authentificator::getUser()) {
 
-Flash::addMessage('Please login to acces that page', Flash::WARNING);
+            Flash::addMessage('Please login to acces that page', Flash::WARNING);
 
             Authentificator::rememberPage();
             $this->redirect('/');
