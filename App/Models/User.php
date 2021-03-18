@@ -203,4 +203,41 @@ class User extends \Core\Model
         Mail::send($this->email, $this->name, 'Password reset', 'ResetPasswordMessage.html', ['url' => $url]);
     }
 
+    public function resetHashExpired()
+    {
+
+        //SAME CHECK AS IN REMEMBERME, TO REFACTOR
+        $result = strtotime($this->expires_date) < time();
+        return $result;
+    }
+
+    public static function findUserByPasswordResetHash($token)
+    {
+        $token = new Token($token);
+        $tokenHashed = $token->getHash();
+
+        $sql = 'SELECT * FROM users
+                WHERE reset_password_hash = :tokenHashed';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindValue(':tokenHashed', $tokenHashed, PDO::PARAM_STR);
+
+        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+
+        $stmt->execute();
+
+        $user = $stmt->fetch();
+
+        if ($user) {
+
+            if (!$this->resetHashExpired($user->reset_password_hash)) {
+
+                return $user;
+
+            }
+        }
+    }
+
 }
