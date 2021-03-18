@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '6087e7a23ec04d36272e67a15591be52e10cc5d6',
+    'reference' => 'ab5acae9d0872d79134c02fa1d01fd859ef04c6a',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '6087e7a23ec04d36272e67a15591be52e10cc5d6',
+      'reference' => 'ab5acae9d0872d79134c02fa1d01fd859ef04c6a',
     ),
     'guzzlehttp/guzzle' => 
     array (
@@ -126,8 +126,8 @@
     ),
     'symfony/polyfill-ctype' => 
     array (
-      'pretty_version' => 'v1.22.0',
-      'version' => '1.22.0.0',
+      'pretty_version' => 'v1.22.1',
+      'version' => '1.22.1.0',
       'aliases' => 
       array (
       ),

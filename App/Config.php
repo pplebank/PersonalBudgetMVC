@@ -5,6 +5,4 @@ namespace App;
 class Config
 {
 
-
-
 }

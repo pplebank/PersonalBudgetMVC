@@ -15,4 +15,12 @@ class Password extends \Core\Controller
         $this->redirect('/');
     }
 
+    public function newPasswordAction()
+    {
+        $token = $this->route_params['token'];
+        $user = User::findUserByPasswordResetHash($token);
+
+        var_dump($user);
+    }
+
 }
